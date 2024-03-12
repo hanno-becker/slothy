@@ -189,13 +189,6 @@ xtmp1 .req x11
         trn1 \data1\().2d, t1.2d, t3.2d
 .endm
 
-.macro transpose_single data_out0, data_out1, data_out2, data_out3, data_in0,  data_in1,  data_in2,  data_in3
-        trn1 \data_out0\().4s, \data_in0\().4s, \data_in1\().4s
-        trn2 \data_out1\().4s, \data_in0\().4s, \data_in1\().4s
-        trn1 \data_out2\().4s, \data_in2\().4s, \data_in3\().4s
-        trn2 \data_out3\().4s, \data_in2\().4s, \data_in3\().4s
-.endm
-
 .macro save_gprs // slothy:no-unfold
         sub sp, sp, #(16*6)
         stp x19, x20, [sp, #16*0]

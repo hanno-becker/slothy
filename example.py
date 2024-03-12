@@ -501,7 +501,7 @@ class ntt_kyber_4567(Example):
 
 
 class ntt_kyber_1234_567(Example):
-    def __init__(self, var="", arch=AArch64_Neon, target=Target_CortexA72):
+    def __init__(self, var="", arch=AArch64_Neon, target=Target_CortexA55):
         name = "ntt_kyber_1234_567"
         infile = name
 
