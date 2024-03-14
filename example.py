@@ -445,6 +445,8 @@ class AArch64Example0(Example):
         super().__init__(infile, name, rename=True, arch=arch, target=target)
 
     def core(self,slothy):
+        slothy.config.variable_size=True
+        slothy.config.constraints.stalls_first_attempt=32
         slothy.optimize()
 
 class AArch64Example1(Example):
@@ -460,6 +462,8 @@ class AArch64Example1(Example):
         super().__init__(infile, name, rename=True, arch=arch, target=target)
 
     def core(self,slothy):
+        slothy.config.variable_size=True
+        slothy.config.constraints.stalls_first_attempt=32
         slothy.config.sw_pipelining.enabled = True
         slothy.optimize_loop("start")
 
