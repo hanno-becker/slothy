@@ -604,7 +604,9 @@ class DataFlowGraph:
         useless_nodes = filter(outputs_unused, self.nodes)
         t = next(useless_nodes, None)
         if t is not None:
-            if not self.config.allow_useless_instructions:
+            ignore_useless_output = t.inst.source_line.tags.get("ignore_useless_output", False)
+            if not self.config.allow_useless_instructions and \
+               ignore_useless_output is False:
                 self._dump_instructions("Source code", error=True)
                 self.logger.error(f"The result registers {t.inst.args_out + t.inst.args_in_out} "
                                   f"of instruction {t.id}:[{t.inst}] are neither used "
@@ -616,7 +618,11 @@ class DataFlowGraph:
             self.logger.warning(f"The result registers {t.inst.args_out + t.inst.args_in_out} "
                               f"of instruction {t.id}:[{t.inst}] are neither used "
                               "nor declared as global outputs.")
-            self.logger.warning("Ignoring this as requested by `config.allow_useless_instructions`!")
+
+            if self.config.allow_useless_instructions is True:
+                self.logger.warning("Ignoring this as requested by `config.allow_useless_instructions`!")
+            elif ignore_useless_output is True:
+                self.logger.warning("Ignoring this as requested by instruction tag 'ignore_useless_outputs'!")
 
     def _parse_line(self, l):
         assert SourceLine.is_source_line(l)
@@ -760,7 +766,7 @@ class DataFlowGraph:
         valid_candidates = list(filter(self._typecheck_node, candidates))
         num_valid_candidates = len(valid_candidates)
         if num_valid_candidates == 0:
-            raise DataFlowGraphException(f"None of the candidate parsings for {sourceline} type checks!"\
+            raise DataFlowGraphException(f"None of the candidate parsings for {sourceline.to_string()} type checks!"\
                             f"\nCandidates\n{candidates}")
         # If we have more than one instruction passing the type check,
         # then we need more typing information from the user.
