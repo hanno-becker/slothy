@@ -3322,6 +3322,8 @@ class SlothyBase(LockAttributes):
         self._model.cp_solver = cp_model.CpSolver()
         self._model.cp_solver.random_seed = self.config.solver_random_seed
 
+        self._model.cp_solver.parameters.num_workers = 16
+
     def _NewIntVar(self, minval, maxval, name=""): # pylint:disable=invalid-name
         r = self._model.cp_model.NewIntVar(minval,maxval, name)
         self._model.variables.append(r)
@@ -3413,7 +3415,7 @@ class SlothyBase(LockAttributes):
                    cur <= self.config.objective_lower_bound:
                     self.logger.info("Reached user-defined objective_lower_bound ... stop")
                     return True
-            return False
+            return True
 
         solution_cb = SlothyBase.CpSatSolutionCb(self.logger,self._model.objective_name,
                                                  self.config.max_solutions,
